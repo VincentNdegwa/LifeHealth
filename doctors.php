@@ -5,44 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Management</title>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            margin-top: 50px;
-        }
-
-        .doctor-list,
-        .add-doctor-form,
-        .overlay {
-            display: block;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .overlay-content {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .doctor-card {
-            margin-bottom: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles/doctors.css">
 </head>
 
 <body>

@@ -5,81 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Management</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            margin: 50px auto;
-            max-width: 800px;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .table th,
-        .table td {
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .table th {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 8px 12px;
-            margin: 5px;
-            font-size: 14px;
-            text-align: center;
-            cursor: pointer;
-            text-decoration: none;
-            border: 1px solid #007bff;
-            color: #007bff;
-            border-radius: 4px;
-            background-color: #fff;
-        }
-
-        .search-container {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 5fr 1fr;
-            margin-top: 2rem;
-
-        }
-
-        .form-control {
-            height: auto !important;
-        }
-
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .overlay-content {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="styles/appointment.css">
 </head>
 
 <body>
@@ -91,7 +17,7 @@
 
         <!-- Search Form -->
         <form action="" method="post" class="search-container">
-            <input class="form-control" type="text" name="searchInput" placeholder="Search by Name or ID">
+            <input class="form-control" type="text" name="searchInput" placeholder="Search by Patient's Name or ID">
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 

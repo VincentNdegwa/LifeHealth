@@ -6,64 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="styles/header.css">
     <title>LifeHealth</title>
-    <style>
-        .navbar {
-            background-color: #007bff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            flex-direction: row !important;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            z-index: 1000;
-        }
-
-        .navbar-brand {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        .navbar-nav {
-            display: flex;
-            flex-direction: row;
-            gap: 1rem;
-        }
-
-        .navbar-nav .nav-link {
-            color: #ffffff;
-        }
-
-        .fa-bars {
-            font-size: 24px;
-            color: #ffffff;
-            cursor: pointer;
-        }
-
-        #toggleNav {
-            display: none;
-        }
-
-        @media (max-width: 767px) {
-            .navbar-nav {
-                display: none;
-                flex-direction: column;
-                background-color: #007bff;
-                position: fixed;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                padding: 10px;
-            }
-
-            #toggleNav {
-                display: block;
-            }
-        }
-    </style>
 </head>
 
 <body>

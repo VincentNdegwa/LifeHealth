@@ -4,24 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/patient.css">
     <title>Patient Management</title>
-    <style>
-        .container {
-            margin-top: 50px;
-        }
-
-        .patient-list {
-            display: block;
-        }
-
-        .add-patient-form {
-            display: "" !important;
-        }
-
-        .patient-card {
-            margin-bottom: 15px;
-        }
-    </style>
 </head>
 
 <body>
@@ -30,7 +14,7 @@
     ?>
 
     <div class="container">
-        <h2 class="text-center mb-4">Patient Management</h2>
+        <h2 class="text-center mt-4">Patient Management</h2>
 
         <!-- Toggle Button -->
         <button class="btn btn-primary mb-3" id="toggleButton">Add New Patient</button>

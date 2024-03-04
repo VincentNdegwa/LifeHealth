@@ -1,0 +1,11 @@
+.patient-list {
+  display: block;
+}
+
+.add-patient-form {
+  display: "" !important;
+}
+
+.patient-card {
+  margin-bottom: 15px;
+}
