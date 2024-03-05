@@ -10,7 +10,43 @@
 
 <body>
     <?php
-    include("./components/header.php")
+    include("./components/header.php");
+    include("./Database/Database.php");
+    ?>
+
+    <?php
+    try {
+        if ($conn != null) {
+            if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_patient_button"])) {
+                print_r($_POST);
+                $query = "INSERT INTO patients 
+                (first_name, last_name, id_number, age, phone_number, gender, conditions) 
+                VALUES ('$_POST[first_name]', '$_POST[last_name]', '$_POST[id_number]', '$_POST[age]', '$_POST[phone_number]', '$_POST[gender]', '$_POST[conditions]')";
+
+                $results = mysqli_query($conn, $query);
+                if ($results) {
+                    echo '<script>
+                    alert("Patient Inserted");
+                  </script>';
+                    header("Location: patient.php");
+                    exit();
+                } else {
+                    echo '<script>
+                    alert("Failed to Insert patients");
+                  </script>';
+                }
+            }
+        } else {
+            echo '<script>
+                    alert("Failed to connect to the Database");
+                  </script>';
+        }
+    } catch (\Throwable $th) {
+        $errorMessage = addslashes($th->getMessage());
+        echo "<script>
+            alert('Error: $errorMessage');
+          </script>";
+    }
     ?>
 
     <div class="container">
@@ -23,25 +59,25 @@
         <div class="add-patient-form d-none">
             <div class="card-body">
                 <h5 class="card-title">New Patient</h5>
-                <form>
+                <form method="post" action="">
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="firstName">First Name</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                            <input type="text" name="first_name" class="form-control" id="firstName" placeholder="First Name" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="lastName">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                            <input type="text" name="last_name" class="form-control" id="lastName" placeholder="Last Name" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="idNumber">ID Number</label>
-                            <input type="text" class="form-control" id="idNumber" placeholder="ID Number" required>
+                            <input type="text" name="id_number" class="form-control" id="idNumber" placeholder="ID Number" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="gender">Gender</label>
-                            <select id="gender" class="form-control" required>
+                            <select id="gender" name="gender" class="form-control" required>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>
@@ -50,18 +86,18 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="phoneNumber">Phone Number</label>
-                            <input type="tel" class="form-control" id="phoneNumber" placeholder="Phone Number" required>
+                            <input type="tel" name="phone_number" class="form-control" id="phoneNumber" placeholder="Phone Number" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="age">Age</label>
-                            <input type="number" class="form-control" id="age" placeholder="Age" required>
+                            <input type="number" name="age" class="form-control" id="age" placeholder="Age" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="conditions">Conditions</label>
-                        <textarea class="form-control" id="conditions" rows="3" placeholder="Enter conditions"></textarea>
+                        <textarea class="form-control" name="conditions" id="conditions" rows="3" placeholder="Enter conditions"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Patient</button>
+                    <button type="submit" name="add_patient_button" class="btn btn-primary">Add Patient</button>
                 </form>
             </div>
         </div>
