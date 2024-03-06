@@ -15,9 +15,17 @@
     ?>
 
     <?php
+    $patients_array = [];
     try {
         if ($conn != null) {
-            if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_patient_button"])) {
+            $patients_query = "SELECT id_number, first_name, last_name, status FROM patients ORDER BY id ASC LIMIT 10 ";
+            $patient_results = mysqli_query($conn, $patients_query);
+            if ($patient_results) {
+                while ($row = mysqli_fetch_assoc($patient_results)) {
+                    $patients_array[] = $row;
+                }
+            }
+            if (isset($_POST["add_patient_button"])) {
                 print_r($_POST);
                 $query = "INSERT INTO patients 
                 (first_name, last_name, id_number, age, phone_number, gender, conditions) 
@@ -141,13 +149,20 @@
             </div>
 
             <h5 class="mb-3">Existing Patients</h5>
-            <div class="patient-card card">
-                <div class="card-body">
-                    <h5 class="card-title">Patient Name</h5>
-                    <p class="card-text">ID: 123 | Gender: Female | Status: Treated</p>
-                    <button class="btn btn-success">Assign Doctor</button>
+            <?php if (count($patients_array) > 0) { ?>
+                <div class="patient-card card">
+                    <?php foreach ($patients_array as $patient) { ?>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo $patient["first_name"] ?> <?php echo $patient["last_name"] ?></h5>
+                            <p class="card-text"> <span class="text-info">ID:</span> <?php echo $patient["id_number"] ?> | <span class="text-info">Status: </span><?php echo $patient["status"] ?> </p>
+                        </div>
+                    <?php }; ?>
+
                 </div>
-            </div>
+
+            <?php } else { ?>
+                <h3 class="text-info">No Added patients, Please proceed to Patient page to add patient</h3>
+            <?php  } ?>
             <!-- Add more patient cards as needed -->
         </div>
     </div>
