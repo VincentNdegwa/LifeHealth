@@ -18,48 +18,54 @@
     $patient_count = 0;
     $medicine_count = 0;
     $administered_patients = 0;
-    $available_docs = 0;
+    $available_docs = 9;
 
     $added_patients = [];
-    if ($conn) {
 
-        $patient_count_query = "SELECT COUNT(*) as patient_count FROM patients";
-        $doctor_count_query = "SELECT COUNT(*) as doctor_count FROM doctors WHERE availability = 'true'";
-        $medicine_count_query = "SELECT COUNT(*) as medicine_count FROM medicines";
-        $appointment_count_query = "SELECT COUNT(*) as appointment_count FROM appointments";
+    try {
+        if ($conn) {
+            date_default_timezone_set('Africa/Nairobi');
+            $currentTime = date('H:i:s');
+            echo $currentTime;
+            $doctor_count_query = "SELECT COUNT(*) as doctor_count FROM doctors WHERE '$currentTime' >= open_availability AND '$currentTime' < close_availability";
 
-        $patient_count_result = mysqli_query($conn, $patient_count_query);
-        $doctor_count_result = mysqli_query($conn, $doctor_count_query);
-        $medicine_count_result = mysqli_query($conn, $medicine_count_query);
-        $appointment_count_result = mysqli_query($conn, $appointment_count_query);
 
-        if ($patient_count_result && $doctor_count_result && $medicine_count_result && $appointment_count_result) {
-            $patient_count_row = mysqli_fetch_assoc($patient_count_result);
-            $patient_count = $patient_count_row['patient_count'];
+            $patient_count_query = "SELECT COUNT(*) as patient_count FROM patients";
+            $medicine_count_query = "SELECT COUNT(*) as medicine_count FROM medicines";
+            $appointment_count_query = "SELECT COUNT(*) as appointment_count FROM appointments";
 
-            $doctor_count_row = mysqli_fetch_assoc($doctor_count_result);
-            $doctor_count = $doctor_count_row['doctor_count'];
+            $patient_count_result = mysqli_query($conn, $patient_count_query);
+            $doctor_count_result = mysqli_query($conn, $doctor_count_query);
+            $medicine_count_result = mysqli_query($conn, $medicine_count_query);
+            $appointment_count_result = mysqli_query($conn, $appointment_count_query);
 
-            $medicine_count_row = mysqli_fetch_assoc($medicine_count_result);
-            $medicine_count = $medicine_count_row['medicine_count'];
+            if ($patient_count_result && $doctor_count_result && $medicine_count_result && $appointment_count_result) {
+                $patient_count_row = mysqli_fetch_assoc($patient_count_result);
+                $patient_count = $patient_count_row['patient_count'];
 
-            $appointment_count_row = mysqli_fetch_assoc($appointment_count_result);
-            $appointment_count = $appointment_count_row['appointment_count'];
-        } else {
-            echo "Error in executing queries: " . mysqli_error($conn);
-        }
-        $patient_list_query = "SELECT first_name, last_name, id_number, gender FROM patients LIMIT 5";
-        $patient_list_result = mysqli_query($conn, $patient_list_query);
+                $doctor_count_row = mysqli_fetch_assoc($doctor_count_result);
+                $available_docs = $doctor_count_row['doctor_count'];
 
-        if ($patient_list_result) {
-            while ($patient = mysqli_fetch_assoc($patient_list_result)) {
-                $added_patients[] = $patient;
+                $medicine_count_row = mysqli_fetch_assoc($medicine_count_result);
+                $medicine_count = $medicine_count_row['medicine_count'];
+
+                $appointment_count_row = mysqli_fetch_assoc($appointment_count_result);
+                $appointment_count = $appointment_count_row['appointment_count'];
+            } else {
+                echo "Error in executing queries: " . mysqli_error($conn);
+            }
+            $patient_list_query = "SELECT first_name, last_name, id_number, gender FROM patients LIMIT 5";
+            $patient_list_result = mysqli_query($conn, $patient_list_query);
+
+            if ($patient_list_result) {
+                while ($patient = mysqli_fetch_assoc($patient_list_result)) {
+                    $added_patients[] = $patient;
+                }
+            } else {
+                echo "Error in executing patient list query: " . mysqli_error($conn);
             }
         } else {
-            echo "Error in executing patient list query: " . mysqli_error($conn);
-        }
-    } else {
-        echo '
+            echo '
             <script>
         const toastLiveExample = document.querySelector("#liveToast")
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
@@ -67,6 +73,12 @@
     </script>
 
         ';
+        }
+    } catch (\Throwable $th) {
+        $errorMessage = addslashes($th->getMessage());
+        echo "<script>
+            alert('Error: $errorMessage');
+          </script>";
     }
     ?>
 
@@ -117,13 +129,13 @@
                             <li class="list-group-item">
                                 Name: <?php echo $item["first_name"] . " " . $item["last_name"] ?> |
                                 ID Number: <?php echo $item["id_number"] ?> |
-                                Gender: <?php echo $item["gender"] ?> 
-                        <?php }; ?>
+                                Gender: <?php echo $item["gender"] ?>
+                            <?php }; ?>
 
-                    <?php } else { ?>
-                        <h3 class="text-info">No Added patients, Please proceed to Patient page to add patient</h3>
-                    <?php } ?>
-                    <!-- Add more list items as needed -->
+                        <?php } else { ?>
+                            <h3 class="text-info">No Added patients, Please proceed to Patient page to add patient</h3>
+                        <?php } ?>
+                        <!-- Add more list items as needed -->
                 </ul>
             </div>
         </div>
