@@ -14,9 +14,9 @@
     include("./Database/Database.php");
     ?>
     <?php
-    $patients_array = [];
     if ($conn) {
         try {
+
 
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $patients_array = [];
@@ -27,12 +27,38 @@
                     while ($patient = mysqli_fetch_assoc($results)) {
                         $patients_array[] = $patient;
                     }
+                } elseif (isset($_GET["time"])) {
+                    $url = 'http://localhost:5000/schedule';
+                    $data = ['time' => $_GET["time"]];
+                    $options = [
+                        'http' => [
+                            'header' => 'Content-Type: application/json',
+                            'method' => 'POST',
+                            'content' => json_encode($data),
+                        ],
+                    ];
+                    $context = stream_context_create($options);
+                    $result = file_get_contents($url, false, $context);
+                    echo "Python script output:\n" . $result;
                 } else {
                     $select_query = "SELECT first_name, last_name, id, id_number, gender FROM patients";
                     $select_results = mysqli_query($conn, $select_query);
                     while ($patient = mysqli_fetch_assoc($select_results)) {
                         $patients_array[] = $patient;
                     }
+                }
+            }
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+                $data = file_get_contents("php://input");
+                $decoded_data = json_decode($data, true);
+
+                if ($decoded_data !== null && json_last_error() === JSON_ERROR_NONE) {
+                    echo "Decoded JSON data:\n";
+                    print_r($decoded_data);
+                } else {
+                    echo "Raw input data:\n";
+                    echo $data . "\n";
                 }
             }
         } catch (\Throwable $th) {
@@ -96,10 +122,12 @@
             <div class="overlay-content">
                 <h3>Schedule Appointment</h3>
                 <p>Select appointment date and time:</p>
-                <input type="time" class="form-control" id="datepicker" placeholder="Select Date">
+                <form action="" method="get">
+                    <input type="time" name="time" class="form-control" id="datepicker" placeholder="Select Date">
 
-                <button class="btn btn-primary mt-2" onclick="showDoctorList()">Next</button>
-                <button class="btn btn-danger mt-2" onclick="removerOverlay()">Cancel</button>
+                    <button type="submit" class="btn btn-primary mt-2">Next</button>
+                    <button type="button" class="btn btn-danger mt-2" onclick="removerOverlay()">Cancel</button>
+                </form>
 
             </div>
         </div>
@@ -108,7 +136,7 @@
     <script>
         function showAppointmentOverlay(patientId) {
             document.getElementById('appointmentOverlay').style.display = 'flex';
-            
+
         }
 
         function showDoctorList() {
