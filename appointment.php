@@ -20,6 +20,7 @@
 
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $patients_array = [];
+                $doctors_avalable = [];
                 if (isset($_GET["mode"])) {
                     $search = $_GET["search"];
                     $search_query = "SELECT first_name, last_name, id, id_number, gender FROM patients WHERE first_name LIKE '%" . $search . "%' OR last_name LIKE '%" . $search . "%' OR id LIKE '%" . $search . "%'";
@@ -39,26 +40,15 @@
                     ];
                     $context = stream_context_create($options);
                     $result = file_get_contents($url, false, $context);
-                    echo "Python script output:\n" . $result;
+                    $decoded_array = json_decode($result, true);
+
+                    $doctors_avalable = $decoded_array;
                 } else {
                     $select_query = "SELECT first_name, last_name, id, id_number, gender FROM patients";
                     $select_results = mysqli_query($conn, $select_query);
                     while ($patient = mysqli_fetch_assoc($select_results)) {
                         $patients_array[] = $patient;
                     }
-                }
-            }
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-                $data = file_get_contents("php://input");
-                $decoded_data = json_decode($data, true);
-
-                if ($decoded_data !== null && json_last_error() === JSON_ERROR_NONE) {
-                    echo "Decoded JSON data:\n";
-                    print_r($decoded_data);
-                } else {
-                    echo "Raw input data:\n";
-                    echo $data . "\n";
                 }
             }
         } catch (\Throwable $th) {
