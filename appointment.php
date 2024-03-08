@@ -6,9 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Management</title>
     <link rel="stylesheet" href="styles/appointment.css">
+
+
 </head>
 
+<script src="./scripts/appointment.js"></script>
+
 <body>
+    <!-- Appointment Overlay -->
+    <div class="overlay" id="appointmentOverlay">
+        <div class="overlay-content">
+            <h3>Schedule Appointment</h3>
+            <p>Select appointment date and time:</p>
+            <form action="" method="get">
+                <input type="text" name="id" class="id_input form-control" readonly>
+                <input type="date" name="date" class="form-control" placeholder="Delect Date">
+                <input type="time" name="time" class="form-control" id="datepicker" placeholder="Select Time">
+
+                <button type="submit" class="btn btn-primary mt-2">Next</button>
+                <button type="button" class="btn btn-danger mt-2" onclick="removerOverlay()">Cancel</button>
+            </form>
+
+        </div>
+    </div>
     <?php
     include("./components/header.php");
     include("./Database/Database.php");
@@ -28,21 +48,15 @@
                     while ($patient = mysqli_fetch_assoc($results)) {
                         $patients_array[] = $patient;
                     }
-                } elseif (isset($_GET["time"])) {
-                    $url = 'http://localhost:5000/schedule';
-                    $data = ['time' => $_GET["time"]];
-                    $options = [
-                        'http' => [
-                            'header' => 'Content-Type: application/json',
-                            'method' => 'POST',
-                            'content' => json_encode($data),
-                        ],
-                    ];
-                    $context = stream_context_create($options);
-                    $result = file_get_contents($url, false, $context);
-                    $decoded_array = json_decode($result, true);
+                } elseif (isset($_GET["time"]) && $_GET["date"]) {
+                    $dateTime = $_GET["date"] . " " . $_GET['time'];
+                    echo $dateTime;
+                    $select_query = "SELECT id, first_name, last_name, speciality, open_availability, close_availability FROM doctors WHERE '$dateTime' >= open_availability AND '$dateTime' < close_availability";
 
-                    $doctors_avalable = $decoded_array;
+                    $select_results = mysqli_query($conn, $select_query);
+                    while ($row = mysqli_fetch_assoc($select_results)) {
+                        $doctors_avalable[] = $row;
+                    }
                     print_r($doctors_avalable);
                 } else {
                     $select_query = "SELECT first_name, last_name, id, id_number, gender FROM patients";
@@ -97,7 +111,7 @@
                             <td><?php echo $patient["first_name"] . " " . $patient["last_name"] ?></td>
                             <td><?php echo $patient["id_number"]  ?></td>
                             <td><?php echo strtoupper($patient["gender"]) ?></td>
-                            <td><button class="btn btn-secondary" onclick="showAppointmentOverlay(<?php echo $patient['id'] ?>)">Schedule</button></td>
+                            <td><button class="btn btn-secondary schedule_button" value="<?php echo $patient["id"] ?>">Schedule</button></td>
                         </tr>
                     <?php } ?>
 
@@ -108,7 +122,7 @@
             <h3 class="text-info mt-4">There are currently no added patients. Please proceed to the Patient page to add a new patient.</h3>
         <?php } ?>
         <!-- Table of available doctors in the selected time time -->
-        <?php if (count($doctors_avalable["data"]) > 0) { ?>
+        <?php if (count($doctors_avalable) > 0) { ?>
             <table class="table">
                 <thead>
                     <tr>
@@ -120,13 +134,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($doctors_avalable["data"] as $doctor) { ?>
+                    <?php foreach ($doctors_avalable as $doctor) { ?>
                         <tr>
                             <td><?php echo $doctor["first_name"] . " " . $doctor["last_name"] ?></td>
                             <td><?php echo $doctor["speciality"]  ?></td>
                             <td><?php echo $doctor["open_availability"]  ?></td>
                             <td><?php echo $doctor["close_availability"]  ?></td>
-                            <td><button class="btn btn-success" onclick="showAppointmentOverlay(<?php echo $patient['id'] ?>)">Schedule</button></td>
+                            <td><button class="btn btn-success">Schedule</button></td>
                         </tr>
                     <?php } ?>
 
@@ -137,37 +151,10 @@
             <h3 class="text-info mt-4">There are currently no added patients. Please proceed to the Patient page to add a new patient.</h3>
         <?php } ?>
 
-        <!-- Appointment Overlay -->
-        <div class="overlay" id="appointmentOverlay">
-            <div class="overlay-content">
-                <h3>Schedule Appointment</h3>
-                <p>Select appointment date and time:</p>
-                <form action="" method="get">
-                    <input type="time" name="time" class="form-control" id="datepicker" placeholder="Select Date">
 
-                    <button type="submit" class="btn btn-primary mt-2">Next</button>
-                    <button type="button" class="btn btn-danger mt-2" onclick="removerOverlay()">Cancel</button>
-                </form>
-
-            </div>
-        </div>
     </div>
 
-    <script>
-        function showAppointmentOverlay(patientId) {
-            document.getElementById('appointmentOverlay').style.display = 'flex';
 
-        }
-
-        function showDoctorList() {
-            document.getElementById('appointmentOverlay').style.display = 'none';
-            alert('Select Doctor Overlay - Replace with Doctor List and Selection');
-        }
-
-        function removerOverlay() {
-            document.getElementById('appointmentOverlay').style.display = 'none';
-        }
-    </script>
 
 
 </body>
