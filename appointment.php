@@ -43,6 +43,7 @@
                     $decoded_array = json_decode($result, true);
 
                     $doctors_avalable = $decoded_array;
+                    print_r($doctors_avalable);
                 } else {
                     $select_query = "SELECT first_name, last_name, id, id_number, gender FROM patients";
                     $select_results = mysqli_query($conn, $select_query);
@@ -97,6 +98,35 @@
                             <td><?php echo $patient["id_number"]  ?></td>
                             <td><?php echo strtoupper($patient["gender"]) ?></td>
                             <td><button class="btn btn-secondary" onclick="showAppointmentOverlay(<?php echo $patient['id'] ?>)">Schedule</button></td>
+                        </tr>
+                    <?php } ?>
+
+                </tbody>
+            </table>
+
+        <?php } else { ?>
+            <h3 class="text-info mt-4">There are currently no added patients. Please proceed to the Patient page to add a new patient.</h3>
+        <?php } ?>
+        <!-- Table of available doctors in the selected time time -->
+        <?php if (count($doctors_avalable["data"]) > 0) { ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>ID</th>
+                        <th>Open</th>
+                        <th>Close</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($doctors_avalable["data"] as $doctor) { ?>
+                        <tr>
+                            <td><?php echo $doctor["first_name"] . " " . $doctor["last_name"] ?></td>
+                            <td><?php echo $doctor["speciality"]  ?></td>
+                            <td><?php echo $doctor["open_availability"]  ?></td>
+                            <td><?php echo $doctor["close_availability"]  ?></td>
+                            <td><button class="btn btn-success" onclick="showAppointmentOverlay(<?php echo $patient['id'] ?>)">Schedule</button></td>
                         </tr>
                     <?php } ?>
 

@@ -27,8 +27,8 @@
                 $username = $_POST["username"];
                 $speciality = $_POST["speciality"];
 
-                $open_availability = date('H:i:s');
-                $close_availability = date('H:i:s', strtotime('+10 hours', strtotime($open_availability)));
+                $open_availability = date('Y-m-d H:i:s');
+                $close_availability = date('Y-m-d H:i:s', strtotime('+10 hours', strtotime($open_availability)));
 
                 $availability = 'true';
 
@@ -165,12 +165,14 @@
                                                 <td>
                                                     <?php
                                                     date_default_timezone_set('Africa/Nairobi');
-                                                    if (date('H:i:s') > $doctor["open_availability"] && date('H:i:s') < $doctor["close_availability"]) {
+                                                    echo date(date('Y-m-d H:i:s')) . "," .  $doctor["open_availability"];
+                                                    if (date('Y-m-d H:i:s') > $doctor["open_availability"] && date('Y-m-d H:i:s') < $doctor["close_availability"]) {
                                                         echo '<span class="badge badge-success">Available</span>';
                                                     } else {
                                                         echo '<span class="badge badge-danger">Not Available</span>';
                                                     }
                                                     ?>
+
                                                 </td>
                                             </tr>
                                         <?php } ?>
