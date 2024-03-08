@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 @app.route('/schedule', methods=['POST'])
 
+
 def schedule():
     try:
         time = request.json.get("time")
