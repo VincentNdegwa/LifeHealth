@@ -165,7 +165,6 @@
                                                 <td>
                                                     <?php
                                                     date_default_timezone_set('Africa/Nairobi');
-                                                    echo date(date('Y-m-d H:i:s')) . "," .  $doctor["open_availability"];
                                                     if (date('Y-m-d H:i:s') > $doctor["open_availability"] && date('Y-m-d H:i:s') < $doctor["close_availability"]) {
                                                         echo '<span class="badge badge-success">Available</span>';
                                                     } else {

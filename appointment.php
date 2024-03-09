@@ -50,7 +50,6 @@
                     }
                 } elseif (isset($_GET["time"]) && $_GET["date"]) {
                     $dateTime = $_GET["date"] . " " . $_GET['time'];
-                    echo $dateTime;
                     $select_query = "SELECT id, first_name, last_name, speciality, open_availability, close_availability FROM doctors WHERE '$dateTime' >= open_availability AND '$dateTime' < close_availability";
 
                     $select_results = mysqli_query($conn, $select_query);
