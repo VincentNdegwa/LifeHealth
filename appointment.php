@@ -37,6 +37,10 @@
     if ($conn) {
         try {
 
+            $patient_id = "";
+            $date = "";
+            $time = "";
+            $doctor_id = "";
 
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 $patients_array = [];
@@ -50,13 +54,18 @@
                     }
                 } elseif (isset($_GET["time"]) && $_GET["date"]) {
                     $dateTime = $_GET["date"] . " " . $_GET['time'];
+                    $date = $_GET["date"];
+                    $time = $_GET["time"];
+                    $patient_id = $_GET["id"];
                     $select_query = "SELECT id, first_name, last_name, speciality, open_availability, close_availability FROM doctors WHERE '$dateTime' >= open_availability AND '$dateTime' < close_availability";
 
                     $select_results = mysqli_query($conn, $select_query);
                     while ($row = mysqli_fetch_assoc($select_results)) {
                         $doctors_avalable[] = $row;
                     }
-                    print_r($doctors_avalable);
+                } elseif (isset($_GET["schedule_doc"])) {
+                    $doctor_id = $_GET["doctor_id"];
+                    print_r($_GET);
                 } else {
                     $select_query = "SELECT first_name, last_name, id, id_number, gender FROM patients";
                     $select_results = mysqli_query($conn, $select_query);
@@ -139,7 +148,16 @@
                             <td><?php echo $doctor["speciality"]  ?></td>
                             <td><?php echo $doctor["open_availability"]  ?></td>
                             <td><?php echo $doctor["close_availability"]  ?></td>
-                            <td><button class="btn btn-success">Schedule</button></td>
+                            <td>
+                                <form method="get">
+                                    <input type="text" name="doctor_id" value="<?php echo $doctor["id"] ?>" />
+                                    <input type="text" name="doctor_date" value="<?php echo $date ?>" />
+                                    <input type="text" name="doctor_time" value="<?php echo $time ?>" />
+                                    <input type="text" name="patient_id" value="<?php echo $patient_id ?>" />
+
+                                    <button class="btn btn-success" name="schedule_doc" value="<?php echo $doctor["first_name"] ?>">Schedule</button>
+                                </form>
+                            </td>
                         </tr>
                     <?php } ?>
 
