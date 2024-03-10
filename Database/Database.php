@@ -2,7 +2,7 @@
 $servename = "mysql2.serv00.com";
 $username = "m5708_Vincent";
 $database = "m5708_VincentNdegwa";
-$password = "User007$";
+$password = "User007";
 
 $conn = mysqli_connect($servename, $username, $password, $database);
 $message = "";
