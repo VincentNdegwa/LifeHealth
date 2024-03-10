@@ -56,6 +56,15 @@
                     $doctors_array[] = $doctor;
                 }
             }
+
+            if (isset($_GET["search_doc_btn"])) {
+                $doctors_array = [];
+                $sql = "SELECT * FROM doctors WHERE speciality LIKE '%" . $_GET['speciality'] . "%'";
+                $select_results = mysqli_query($conn, $sql);
+                while ($row = mysqli_fetch_assoc($select_results)) {
+                    $doctors_array[] = $row;
+                }
+            }
         } else {
             echo '
             <script>
@@ -117,24 +126,19 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Filter and Search</h5>
-                    <div class="form-row">
+                    <form method="get" class="form-row">
                         <div class="form-group col-md-4">
                             <label for="specialityFilter">Speciality</label>
-                            <input type="text" class="form-control" id="specialityFilter" placeholder="Enter speciality">
+                            <input type="text" name="speciality" class="form-control" id="specialityFilter" placeholder="Enter speciality">
                         </div>
+
                         <div class="form-group col-md-4">
-                            <label for="availabilityFilter">Availability</label>
-                            <select id="availabilityFilter" class="form-control">
-                                <option value="">All</option>
-                                <option value="available">Available</option>
-                                <option value="unavailable">Unavailable</option>
-                            </select>
+                            <label for="search">Search</label>
+                            <div class="input-group">
+                                <button class="btn btn-primary" name="search_doc_btn" value="search" type="submit"><i class="fas fa-search"></i></button>
+                            </div>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label for="searchDoctor">Search</label>
-                            <input type="text" class="form-control" id="searchDoctor" placeholder="Enter doctor's name">
-                        </div>
-                    </div>
+                    </form>
                 </div>
                 <h5 class="mb-3">Existing Doctors</h5>
                 <div class="doctor-card card">

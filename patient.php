@@ -49,6 +49,21 @@
                     alert("Failed to connect to the Database");
                   </script>';
         }
+
+        if (isset($_GET["search_btn"])) {
+            $patients_array = [];
+            $sql = "SELECT * FROM patients WHERE gender = '{$_GET['gender']}' AND status = '{$_GET['status']}'";
+
+            $result = mysqli_query($conn, $sql);
+
+            if ($result) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $patients_array[] = $row;
+                }
+
+                mysqli_close($conn);
+            }
+        }
     } catch (\Throwable $th) {
         $errorMessage = addslashes($th->getMessage());
         echo "<script>
@@ -116,11 +131,11 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Filter and Search</h5>
-                    <form>
+                    <form method="get">
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="genderFilter">Gender</label>
-                                <select id="genderFilter" class="form-control">
+                                <select id="genderFilter" name="gender" class="form-control">
                                     <option value="">All</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
@@ -128,19 +143,16 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="statusFilter">Status</label>
-                                <select id="statusFilter" class="form-control">
+                                <select id="statusFilter" name="status" class="form-control">
                                     <option value="">All</option>
                                     <option value="treated">Treated</option>
-                                    <option value="notTreated">Not Treated</option>
+                                    <option value="not treated">Not Treated</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="search">Search</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="search" placeholder="Enter name or ID number">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
-                                    </div>
+                                    <button class="btn btn-primary" name="search_btn" value="search" type="submit"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </div>
