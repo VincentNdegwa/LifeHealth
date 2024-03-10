@@ -20,7 +20,6 @@ def connect_db():
 @app.route('/', methods=['POST'])
 def update_availability():
     try:
-        print("hello")
         conn = connect_db()
         cursor = conn.cursor()
 

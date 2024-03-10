@@ -29,15 +29,15 @@
         if ($conn) {
             date_default_timezone_set('Africa/Nairobi');
             $currentTime = date('Y-m-d H:i:s');
+            $output_path = __DIR__ . "/Api/output.log";
+            $file_path = __DIR__ . "/Api/update_doctors.py";
+            $command = "/usr/bin/python3  $file_path > $output_path 2>&1";
+            exec($command, $output, $return_var);
 
-            $file_path = __DIR__ . "/Api/update_doctors..py";
-            $command = "python3  $file_path > /dev/null 2>&1 &";
-            exec($command);
 
             sleep(2);
 
             $url = 'http://localhost:5000';
-
             $data = array();
 
             $options = array(
@@ -56,7 +56,6 @@
             } else {
                 echo "POST request sent successfully";
             }
-
 
 
             $doctor_count_query = "SELECT COUNT(*) as doctor_count FROM doctors WHERE '$currentTime' >= open_availability AND '$currentTime' < close_availability";
@@ -82,7 +81,7 @@
                 $medicine_count = $medicine_count_row['medicine_count'];
 
                 $appointment_count_row = mysqli_fetch_assoc($appointment_count_result);
-                $appointment_count = $appointment_count_row['appointment_count'];
+                $administered_patients = $appointment_count_row['appointment_count'];
             } else {
                 echo "Error in executing queries: " . mysqli_error($conn);
             }
@@ -117,7 +116,6 @@
 
     <div class="container">
         <h2 class="text-center">Medical Dashboard</h2>
-
         <!-- Medicine Counts -->
         <div class="card">
             <div class="card-body">

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/var/www/html/LifeHealth/Api/update_doctors.py", line 2, in <module>
+    import mysql.connector
+ModuleNotFoundError: No module named 'mysql'
