@@ -18,7 +18,7 @@
     $patients_array = [];
     try {
         if ($conn != null) {
-            $patients_query = "SELECT id_number, first_name, last_name, status FROM patients ORDER BY id ASC LIMIT 10 ";
+            $patients_query = "SELECT id_number, first_name, last_name, status FROM patients ORDER BY id DESC LIMIT 10 ";
             $patient_results = mysqli_query($conn, $patients_query);
             if ($patient_results) {
                 while ($row = mysqli_fetch_assoc($patient_results)) {

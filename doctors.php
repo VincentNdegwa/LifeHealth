@@ -48,7 +48,7 @@
                 exit();
             }
 
-            $select_query = "SELECT first_name,last_name,username, speciality, open_availability, close_availability FROM doctors";
+            $select_query = "SELECT first_name,last_name,username, speciality, open_availability, close_availability FROM doctors ORDER BY id DESC";
 
             $select_results = mysqli_query($conn, $select_query);
             if ($select_results) {

@@ -47,7 +47,12 @@
                 $doctors_avalable = [];
                 if (isset($_GET["mode"])) {
                     $search = $_GET["search"];
-                    $search_query = "SELECT first_name, last_name, id, id_number, gender FROM patients WHERE first_name LIKE '%" . $search . "%' OR last_name LIKE '%" . $search . "%' OR id LIKE '%" . $search . "%'";
+                    $search_query = "SELECT first_name, last_name, p.id, id_number, gender 
+                    FROM patients AS p 
+                    LEFT JOIN appointments AS app ON p.id = app.patient_id 
+                    WHERE app.patient_id IS NULL 
+                    AND (first_name LIKE '%" . $search . "%' OR last_name LIKE '%" . $search . "%' OR p.id LIKE '%" . $search . "%')";
+
                     $results = mysqli_query($conn, $search_query);
                     while ($patient = mysqli_fetch_assoc($results)) {
                         $patients_array[] = $patient;
@@ -71,7 +76,7 @@
                     header("Location: appointment.php");
                     exit();
                 } else {
-                    $select_query = "SELECT first_name, last_name, id, id_number, gender FROM patients";
+                    $select_query = "SELECT first_name, last_name, p.id, id_number, gender FROM patients as p LEFT JOIN appointments as app ON p.id = app.patient_id = p.id WHERE app.patient_id IS NULL";
                     $select_results = mysqli_query($conn, $select_query);
                     while ($patient = mysqli_fetch_assoc($select_results)) {
                         $patients_array[] = $patient;
