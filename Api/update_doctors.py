@@ -1,26 +1,17 @@
 from datetime import datetime, timedelta
 import mysql.connector
-from flask import Flask
 
-app = Flask(__name__)
+try:
+    conn = mysql.connector.connect(
+        host="mysql2.serv00.com",
+        user="m5708_Vincent",
+        password="User007",
+        database="m5708_VincentNdegwa",
+    )
 
-def connect_db():
-    try:
-        conn = mysql.connector.connect(
-            host="localhost",
-            user="vincent",
-            password="Vincent07$",
-            database="LifeHealth",
-        )
-        return conn
-    except mysql.connector.Error as e:
-        print(e)
-        return None
+    if conn.is_connected():
+        print("Connected to the database")
 
-@app.route('/', methods=['POST'])
-def update_availability():
-    try:
-        conn = connect_db()
         cursor = conn.cursor()
 
         query = "SELECT id, open_availability, close_availability FROM doctors"
@@ -28,9 +19,7 @@ def update_availability():
         rows = cursor.fetchall()
 
         for row in rows:
-            id = row[0]
-            open_availability = row[1]
-            close_availability = row[2]
+            id, open_availability, close_availability = row
 
             if close_availability is not None and close_availability < datetime.now():
                 new_open_availability = open_availability + timedelta(hours=24)
@@ -39,14 +28,14 @@ def update_availability():
                 update_query = "UPDATE doctors SET open_availability = %s, close_availability = %s WHERE id = %s"
                 update_data = (new_open_availability, new_close_availability, id)
                 cursor.execute(update_query, update_data)
-                conn.commit()
                 print(f"Updated row with ID: {id}")
 
+        conn.commit()
         conn.close()
-        return "SQL command executed successfully"
+        print("SQL command executed successfully")
 
-    except Exception as e:
-        return f"Error: {e}"
+    else:
+        print("Failed to connect to the database")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+except mysql.connector.Error as e:
+    print(f"Error: {e}")
