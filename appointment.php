@@ -34,6 +34,8 @@
     include("./Database/Database.php");
     ?>
     <?php
+
+    $view_patients = true;
     if ($conn) {
         try {
 
@@ -62,6 +64,7 @@
                     $date = $_GET["date"];
                     $time = $_GET["time"];
                     $patient_id = $_GET["id"];
+                    $view_patients = false;
                     $select_query = "SELECT id, first_name, last_name, speciality, open_availability, close_availability FROM doctors WHERE '$dateTime' >= open_availability AND '$dateTime' < close_availability";
                     $select_results = mysqli_query($conn, $select_query);
                     while ($row = mysqli_fetch_assoc($select_results)) {
@@ -75,12 +78,15 @@
                     mysqli_query($conn, $insert_query);
                     header("Location: appointment.php");
                     exit();
-                } else {
-                    $select_query = "SELECT first_name, last_name, p.id, id_number, gender FROM patients as p LEFT JOIN appointments as app ON p.id = app.patient_id = p.id WHERE app.patient_id IS NULL";
-                    $select_results = mysqli_query($conn, $select_query);
-                    while ($patient = mysqli_fetch_assoc($select_results)) {
-                        $patients_array[] = $patient;
-                    }
+                }
+
+                $select_query = "SELECT first_name, last_name, p.id, id_number, gender 
+                 FROM patients AS p 
+                 LEFT JOIN appointments AS app ON p.id = app.patient_id 
+                 WHERE app.patient_id IS NULL LIMIT 100";
+                $select_results = mysqli_query($conn, $select_query);
+                while ($patient = mysqli_fetch_assoc($select_results)) {
+                    $patients_array[] = $patient;
                 }
             }
         } catch (\Throwable $th) {
@@ -112,70 +118,78 @@
         </form>
 
         <!-- Table of Patients Not Treated -->
-        <?php if (count($patients_array) > 0) { ?>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>ID</th>
-                        <th>Gender</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($patients_array as $patient) { ?>
+        <?php if ($view_patients) { ?>
+
+
+            <?php if (count($patients_array) > 0) { ?>
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td><?php echo $patient["first_name"] . " " . $patient["last_name"] ?></td>
-                            <td><?php echo $patient["id_number"]  ?></td>
-                            <td><?php echo strtoupper($patient["gender"]) ?></td>
-                            <td><button class="btn btn-secondary schedule_button" value="<?php echo $patient["id"] ?>">Schedule</button></td>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Gender</th>
+                            <th>Action</th>
                         </tr>
-                    <?php } ?>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($patients_array as $patient) { ?>
+                            <tr>
+                                <td><?php echo $patient["first_name"] . " " . $patient["last_name"] ?></td>
+                                <td><?php echo $patient["id_number"]  ?></td>
+                                <td><?php echo strtoupper($patient["gender"]) ?></td>
+                                <td><button class="btn btn-secondary schedule_button" value="<?php echo $patient["id"] ?>">Schedule</button></td>
+                            </tr>
+                        <?php } ?>
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
-        <?php } else { ?>
-            <h3 class="text-info mt-4">There are currently no added patients. Please proceed to the Patient page to add a new patient.</h3>
-        <?php } ?>
-        <!-- Table of available doctors in the selected time time -->
-        <?php if (count($doctors_avalable) > 0) { ?>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>ID</th>
-                        <th>Open</th>
-                        <th>Close</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($doctors_avalable as $doctor) { ?>
+            <?php } else { ?>
+                <h3 class="text-info mt-4">All patients have been scheduled</h3>
+            <?php } ?>
+
+
+        <?php    } else { ?>
+            <!-- Table of available doctors in the selected time time -->
+            <?php if (count($doctors_avalable) > 0) { ?>
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td><?php echo $doctor["first_name"] . " " . $doctor["last_name"] ?></td>
-                            <td><?php echo $doctor["speciality"]  ?></td>
-                            <td><?php echo $doctor["open_availability"]  ?></td>
-                            <td><?php echo $doctor["close_availability"]  ?></td>
-                            <td>
-                                <form method="get">
-                                    <input type="number" name="doctor_id" value="<?php echo $doctor["id"] ?>" />
-                                    <input type="text" name="doctor_date" value="<?php echo $date ?>" />
-                                    <input type="text" name="doctor_time" value="<?php echo $time ?>" />
-                                    <input type="number" name="patient_id" value="<?php echo $patient_id ?>" />
-
-                                    <button class="btn btn-success" name="schedule_doc" value="<?php echo $doctor["first_name"] ?>">Schedule</button>
-                                </form>
-                            </td>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Open</th>
+                            <th>Close</th>
+                            <th>Action</th>
                         </tr>
-                    <?php } ?>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($doctors_avalable as $doctor) { ?>
+                            <tr>
+                                <td><?php echo $doctor["first_name"] . " " . $doctor["last_name"] ?></td>
+                                <td><?php echo $doctor["speciality"]  ?></td>
+                                <td><?php echo $doctor["open_availability"]  ?></td>
+                                <td><?php echo $doctor["close_availability"]  ?></td>
+                                <td>
+                                    <form method="get">
+                                        <input type="hidden" name="doctor_id" value="<?php echo $doctor["id"] ?>" />
+                                        <input type="hidden" name="doctor_date" value="<?php echo $date ?>" />
+                                        <input type="hidden" name="doctor_time" value="<?php echo $time ?>" />
+                                        <input type="hidden" name="patient_id" value="<?php echo $patient_id ?>" />
 
-                </tbody>
-            </table>
+                                        <button class="btn btn-success" name="schedule_doc" value="<?php echo $doctor["first_name"] ?>">Schedule</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php } ?>
 
-        <?php } else { ?>
-            <h3 class="text-info mt-4">There are currently no added patients. Please proceed to the Patient page to add a new patient.</h3>
-        <?php } ?>
+                    </tbody>
+                </table>
+
+            <?php } else { ?>
+                <h3 class="text-info mt-4">At the chosen date and time, there are currently no available doctors.</h3>
+            <?php } ?>
+        <?php  } ?>
+
 
 
     </div>

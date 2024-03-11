@@ -29,35 +29,7 @@
         if ($conn) {
             date_default_timezone_set('Africa/Nairobi');
             $currentTime = date('Y-m-d H:i:s');
-            // $output_path = __DIR__ . "/Api/output.log";
-            // $file_path = __DIR__ . "/Api/update_doctors.py";
-            // $command = "/usr/bin/python3  $file_path > $output_path 2>&1";
-            // exec($command, $output, $return_var);
-
-
-            // sleep(2);
-
-            // $url = 'http://localhost:5000';
-            // $data = array();
-
-            // $options = array(
-            //     'http' => array(
-            //         'header'  => "Content-type: application/json\r\n",
-            //         'method'  => 'POST',
-            //         'content' => json_encode($data),
-            //     ),
-            // );
-
-            // $context  = stream_context_create($options);
-            // $result = file_get_contents($url, false, $context);
-
-            // if ($result === FALSE) {
-            //     echo "Error sending POST request";
-            // } else {
-            //     echo "POST request sent successfully";
-            // }
-
-
+      
             $doctor_count_query = "SELECT COUNT(*) as doctor_count FROM doctors WHERE '$currentTime' >= open_availability AND '$currentTime' < close_availability";
 
 
