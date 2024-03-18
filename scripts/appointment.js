@@ -10,18 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 })
 
-function showAppointmentOverlay(patientId) {
-    let overlay = document.querySelector("#appointmentOverlay");
-    console.log(overlay)
-
-
-}
-
-function showDoctorList() {
-    document.getElementById('appointmentOverlay').style.display = 'none';
-    alert('Select Doctor Overlay - Replace with Doctor List and Selection');
-}
-
 function removerOverlay() {
     document.getElementById('appointmentOverlay').style.display = 'none';
 }
